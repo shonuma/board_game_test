@@ -49,6 +49,7 @@ def leave_user(user):
 @app.route('/adminApi/leaveAll')
 def leave_user_all():
     user_db = {}
+    data_db = {}
     logging.info("Init user db")
     return create_response()
 

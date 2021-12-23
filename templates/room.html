@@ -11,6 +11,12 @@
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script>
             $.get(
+                '/api/join/{{ data.user }}',
+                function(data) {
+                    console.log(data);
+                }
+            );
+            $.get(
                 '/api/getNumber/{{ data.user }}',
                 function(data) {
                     console.log(data);

@@ -1,0 +1,39 @@
+<html>
+    <title>
+    </title>
+    <head>
+    </head>
+    <body>
+        <h1>Admin Page</h1>
+        <h2>Users</h2>
+        <div id="pre-user">
+
+        </div>
+        <h2>Numbers</h2>
+        <div id="pre-number">
+
+        </div>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script>
+            $.get(
+                '/adminApi/getAllUser',
+                function(data) {
+                    console.log(data);
+                    $("#pre-user").text(data);
+                }
+            );
+            $.get(
+                '/adminApi/getAllNumber',
+                function(data) {
+                    var x = JSON.parse(data)
+                    var html_ = ''
+                    for (let i = 0; i < x['result'].length; i++) {
+                        console.log(x['result'][i]);
+                        html_ += x['result'][i].name + ' : ' + '<font color="#ffffff">'　+ x['result'][i].value + '</font><br>';
+                    }
+                    $("#pre-number").html(html_);
+                }
+            );
+        </script>
+    </body>
+</html>

@@ -1,0 +1,23 @@
+<html>
+    <title>
+    </title>
+    <head>
+    </head>
+    <body>
+        <h1>User Page</h1>
+        <h2>Your number is</h2>
+        <div id="number">
+        </div>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script>
+            $.get(
+                '/api/getNumber/{{ data.user }}',
+                function(data) {
+                    console.log(data);
+                    var x = JSON.parse(data)
+                    $("#number").text(x.value);
+                }
+            );
+        </script>
+    </body>
+</html>

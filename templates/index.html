@@ -1,0 +1,25 @@
+<html>
+    <title>
+    </title>
+    <head>
+    </head>
+    <body>
+        <h1>Ito</h1>
+        <input type="text" id="user_name">
+        <p>
+            <button id="enter">入室</button>
+        </p>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script>
+            $("#enter").click(function() {
+                var name = $("#user_name").val();
+                if (name == "") {
+                    alert('Enter user name');
+                    return false
+                }
+                // locate to room.html
+                location.href = "/room/" + name;
+            });
+        </script>
+    </body>
+</html>

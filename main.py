@@ -101,7 +101,7 @@ def get_all_users():
 
 
 def create_response(data={}):
-    return json.dumps(data)
+    return json.dumps(data, ensure_ascii=False)
 
 
 if __name__ == '__main__':

@@ -1,4 +1,6 @@
 from flask import Flask, render_template
+from flask_httpauth import HTTPDigestAuth
+import os
 import json
 import random
 import copy
@@ -6,6 +8,17 @@ import copy
 import logging
 
 app = Flask(__name__)
+app.config['SECRET_KEY'] = os.environ['SECRET_KEY']
+
+auth = HTTPDigestAuth()
+users = {
+    os.environ['USER']: os.environ['PASSWD'],
+}
+
+@auth.get_password
+def get_pw(id):
+    return users.get(id)
+
 
 user_db = {}
 data_db = {}
@@ -16,8 +29,8 @@ default_list = [_ for _ in range(1, 101)]
 def index_page():
     return render_template('index.html')
 
-
 @app.route('/admin')
+@auth.login_required
 def admin_page():
     return render_template('admin.html')
 
@@ -46,8 +59,26 @@ def leave_user(user):
     return create_response()
 
 
+@app.route('/adminApi/getGameStatus')
+def get_game_status():
+    result = {"status": "No one here."}
+    if not user_db:
+        result['status'] = "No one here."
+    elif not data_db:
+        result['status'] = "[Waiting] {} people is waiting.".format(
+            len(user_db)
+        )        
+    else:
+        result['status'] = "[In Game] {} people in game.".format(
+            len(user_db)
+        )
+    return create_response(result)
+
+
 @app.route('/adminApi/leaveAll')
 def leave_user_all():
+    global user_db
+    global data_db
     user_db = {}
     data_db = {}
     logging.info("Init user db")
@@ -84,7 +115,16 @@ def get_all_numbers():
                 'value': value,
             }
         )
-    return create_response({'result': result})
+    
+    return create_response(
+        {
+            'result': result,
+            'rightArray': sorted(
+                result,
+                key=lambda x: x['value']
+            )
+        }
+    )
 
 
 @app.route('/adminApi/getAllUser')

@@ -5,6 +5,7 @@
     </head>
     <body>
         <h1>Admin Page</h1>
+        <p>Game Status: <span id="game-status"></span></p>
         <h2>Users</h2>
         <div id="pre-user">
 
@@ -12,28 +13,75 @@
         <h2>Numbers</h2>
         <div id="pre-number">
         </div>
+        <p>Right array[lower -- higher] is ...</p>
+        <div id="right-array" style="color: #ffffff">
+        </div>
         <textarea></textarea>
+        <h2>Operations</h2>
+        <div id="opeartion">
+            <Button id="start-game">Start Game</Button>
+            <Button id="leave-all">Init Game</Button>
+        </div>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script>
-            $.get(
-                '/adminApi/getAllUser',
-                function(data) {
-                    console.log(data);
-                    $("#pre-user").text(data);
-                }
-            );
-            $.get(
-                '/adminApi/getAllNumber',
-                function(data) {
-                    var x = JSON.parse(data)
-                    var html_ = ''
-                    for (let i = 0; i < x['result'].length; i++) {
-                        console.log(x['result'][i]);
-                        html_ += x['result'][i].name + ' : ' + '<font color="#ffffff">'　+ x['result'][i].value + '</font><br>';
+            $(function(){
+                $.get(
+                    '/adminApi/getAllUser',
+                    function(data) {
+                        console.log(data);
+                        $("#pre-user").text(data);
                     }
-                    $("#pre-number").html(html_);
-                }
-            );
+                );
+                $.get(
+                    '/adminApi/getAllNumber',
+                    function(data) {
+                        var x = JSON.parse(data);
+                        console.log(data);
+                        var html_ = ''
+                        for (let i = 0; i < x['result'].length; i++) {
+                            console.log(x['result'][i]);
+                            html_ += x['result'][i].name + ' : ' + '<font color="#ffffff">'　+ x['result'][i].value + '</font><br>';
+                        }
+                        $("#pre-number").html(html_);
+                        var html2_ = ''
+                        for (let i = 0; i < x['rightArray'].length; i++) {
+                            if (html2_ == '') {
+                                html2_ += x['rightArray'][i].name + ':' + x['rightArray'][i].value;
+                            } else {
+                                html2_ += ', ' + x['rightArray'][i].name + ':' + x['rightArray'][i].value;
+                            }
+                        }
+                        $("#right-array").html(html2_);
+                    }
+                );
+                $.get(
+                    '/adminApi/getGameStatus',
+                    function(data) {
+                        console.log(data);
+                        $("#game-status").html(JSON.parse(data).status);
+                    }
+                );
+                $("button#leave-all").click(function() {
+                    if (confirm("Remove all users, sure?")) {
+                        $.get(
+                            '/adminApi/leaveAll',
+                            function(data) {
+                                location.href = '/admin';
+                            }                            
+                        )
+                    }
+                });
+                $("button#start-game").click(function() {
+                    if (confirm("Starting game, all users are in ready?")) {
+                        $.get(
+                            '/adminApi/startGame',
+                            function(data) {
+                                location.href = '/admin';
+                            }                            
+                        )
+                    }
+                });
+            })
         </script>
     </body>
 </html>
